@@ -3,6 +3,7 @@ import re
 import datetime
 from scraper.items import ProductItem
 
+
 class CompelZeroDaysSpider(scrapy.Spider):
     name = 'compel_zero_days_priority'
     custom_settings = {'ITEM_PIPELINES': {'scraper.pipelines.SqliteCompelPipeline': 300}}
