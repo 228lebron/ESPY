@@ -4,7 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
+import os
 import sqlite3
 
 class ScraperPipeline:
@@ -15,11 +15,13 @@ class ScraperPipeline:
 class SqliteCompelPipeline:
 
     def __init__(self):
+        print('Текущий юзер:', os.getlogin())
+        print('Текущая рабочая директория:', os.getcwd())
         ## Create/Connect to database
-        self.con = sqlite3.connect('products.db')
-
-        ## Create cursor, used to execute commands
-        self.cur = self.con.cursor()
+        if not os.path.isfile('/home/ESPY/scraper/products.db'):
+            self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
+        else:
+            self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
 
         ## Create quotes table if none exists
         self.cur.execute("""
