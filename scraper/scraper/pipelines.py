@@ -18,10 +18,11 @@ class SqliteCompelPipeline:
         print('Текущий юзер:', os.getlogin())
         print('Текущая рабочая директория:', os.getcwd())
         ## Create/Connect to database
-        if not os.path.isfile('/home/ESPY/scraper/products.db'):
-            self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
-        else:
-            self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
+        self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
+        #if not os.path.isfile('/home/ESPY/scraper/products.db'):
+        #    self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
+        #else:
+        #    self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
 
         ## Create quotes table if none exists
         self.cur.execute("""
@@ -37,22 +38,32 @@ class SqliteCompelPipeline:
         """)
 
     def process_item(self, item, spider):
-        ## Define insert statement
-        self.cur.execute("""
-            INSERT INTO compel_data (name, brand, price, quantity, days_until_shipment, url, date) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-        """,
-                         (
-                             item['name'],
-                             item['brand'],
-                             item['price'],
-                             item['quantity'],
-                             item['days_until_shipment'],
-                             item['url'],
-                             item['date'],
-                         ))
+        ## Check to see if text is already in database
+        self.cur.execute("""SELECT * FROM compel_data WHERE url=? AND date=?""", (item['url'], item['date']))
+        result = self.cur.fetchone()
 
-        ## Execute insert of data into database
-        self.con.commit()
+        ## If it is in DB, create log message
+        if result:
+            spider.logger.warn("Item already in database: %s" % item['url'])
+
+        ## If text isn't in the DB, insert data
+        else:
+            ## Define insert statement
+            self.cur.execute("""
+                INSERT INTO compel_data (name, brand, price, quantity, days_until_shipment, url, date) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+                             (
+                                 item['name'],
+                                 item['brand'],
+                                 item['price'],
+                                 item['quantity'],
+                                 item['days_until_shipment'],
+                                 item['url'],
+                                 item['date'],
+                             ))
+
+            ## Execute insert of data into database
+            self.con.commit()
         return item
 
