@@ -18,11 +18,10 @@ class SqliteCompelPipeline:
         print('Текущий юзер:', os.getlogin())
         print('Текущая рабочая директория:', os.getcwd())
         ## Create/Connect to database
+
         self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
-        #if not os.path.isfile('/home/ESPY/scraper/products.db'):
-        #    self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
-        #else:
-        #    self.con = sqlite3.connect('/home/ESPY/scraper/products.db')
+        ## Create cursor, used to execute commands
+        self.cur = self.con.cursor()
 
         ## Create quotes table if none exists
         self.cur.execute("""
