@@ -125,15 +125,6 @@ class CompelZeroDaysSpider(scrapy.Spider):
                         lowest_price_qty = int(qty_td)
                         days = days_until_shipment
 
-        #yield {
-        #    'name': response.meta['query_string'],
-        #    'brand': map_brand_name(response.meta['search_brend']),
-        #    'price': lowest_price,
-        #    'quantity': lowest_price_qty,
-        #    'days_until_shipment': days,
-        #    'url': response.meta['prod_url'],
-        #}
-
         product_item = ProductItem()
 
         product_item['name'] = response.meta['query_string']
