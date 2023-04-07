@@ -70,7 +70,7 @@ ROBOTSTXT_OBEY = False
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-#AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
 #AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
@@ -93,9 +93,9 @@ ROBOTSTXT_OBEY = False
 ROTATING_PROXY_LIST_PATH = 'proxs.txt'
 
 ## Enable The Proxy Middleware In Your Downloader Middlewares
-DOWNLOADER_MIDDLEWARES = {
-    # ...
-    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-    # ...
-}
+#DOWNLOADER_MIDDLEWARES = {
+#    # ...
+#    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+#    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+#    # ...
+#}

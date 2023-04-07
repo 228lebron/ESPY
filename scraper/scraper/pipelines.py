@@ -43,7 +43,26 @@ class SqliteCompelPipeline:
 
         ## If it is in DB, create log message
         if result:
-            spider.logger.warn("Item already in database: %s" % item['url'])
+            self.cur.execute("""
+                            UPDATE compel_data SET 
+                                name = ?,
+                                brand = ?,
+                                price = ?,
+                                quantity = ?,
+                                days_until_shipment = ?
+                            WHERE url = ? AND date = ?
+                        """,
+                             (
+                                 item['name'],
+                                 item['brand'],
+                                 item['price'],
+                                 item['quantity'],
+                                 item['days_until_shipment'],
+                                 item['url'],
+                                 item['date']
+                             ))
+            self.con.commit()
+            spider.logger.warn("Item updated in database: %s" % item['url'])
 
         ## If text isn't in the DB, insert data
         else:
@@ -64,5 +83,6 @@ class SqliteCompelPipeline:
 
             ## Execute insert of data into database
             self.con.commit()
+
         return item
 
