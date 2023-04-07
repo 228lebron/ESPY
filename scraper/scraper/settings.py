@@ -90,7 +90,7 @@ AUTOTHROTTLE_ENABLED = True
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
-ROTATING_PROXY_LIST_PATH = 'proxs.txt'
+ROTATING_PROXY_LIST_PATH = '/home/ESPY/scraper/proxs.txt'
 
 ## Enable The Proxy Middleware In Your Downloader Middlewares
 DOWNLOADER_MIDDLEWARES = {
