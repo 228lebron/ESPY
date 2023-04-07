@@ -129,7 +129,7 @@ class CompelZeroDaysSpider(scrapy.Spider):
 
         product_item = ProductItem()
 
-        product_item['category'] = response.meta['category']
+        product_item['category'] = str(response.meta['category']).strip()
         product_item['name'] = response.meta['query_string']
         product_item['brand'] = map_brand_name(response.meta['search_brend'])
         product_item['price'] = lowest_price
