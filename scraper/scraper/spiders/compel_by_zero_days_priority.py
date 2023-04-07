@@ -6,10 +6,7 @@ from scraper.items import ProductItem
 
 class CompelZeroDaysSpider(scrapy.Spider):
     name = 'compel_zero_days_priority'
-    custom_settings = {'ITEM_PIPELINES': {'scraper.pipelines.SqliteCompelPipeline': 300},
-                       'DOWNLOADER_MIDDLEWARES': {'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-                                                  'rotating_proxies.middlewares.BanDetectionMiddleware': 620}
-                       }
+    custom_settings = {'ITEM_PIPELINES': {'scraper.pipelines.SqliteCompelPipeline': 300}}
     allowed_domains = ['www.electronshik.ru']
     start_urls = ['https://www.electronshik.ru/catalog/mikrokontrollery/KjMU']
 
