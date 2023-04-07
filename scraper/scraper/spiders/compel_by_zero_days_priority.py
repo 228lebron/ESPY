@@ -22,7 +22,7 @@ class CompelZeroDaysSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(next_page_url), callback=self.parse)
 
     def parse_product(self, response):
-        category = response.css('div#breadcrumbs nav.breadcrumbs ul li span[itemprop="name"]::text')[-1].get()
+        category = response.css('div#breadcrumbs nav.breadcrumbs ul li span[itemprop="name"]::text')[-2].get()
         item_offers = response.xpath('//table[@id="item_offers"]')
         item_id_search = item_offers.xpath('@data-item_id_search').get()
         query_string = item_offers.xpath('@data-query_string').get()
