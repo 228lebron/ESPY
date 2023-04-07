@@ -93,9 +93,9 @@ AUTOTHROTTLE_ENABLED = True
 ROTATING_PROXY_LIST_PATH = 'proxs.txt'
 
 ## Enable The Proxy Middleware In Your Downloader Middlewares
-#DOWNLOADER_MIDDLEWARES = {
-#    # ...
-#    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-#    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-#    # ...
-#}
+DOWNLOADER_MIDDLEWARES = {
+    # ...
+    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+    # ...
+}
