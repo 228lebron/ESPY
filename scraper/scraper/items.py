@@ -14,6 +14,7 @@ class ScraperItem(scrapy.Item):
 
 
 class ProductItem(scrapy.Item):
+    category = scrapy.Field()
     name = scrapy.Field()
     brand = scrapy.Field()
     price = scrapy.Field()

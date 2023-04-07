@@ -26,6 +26,7 @@ class SqliteCompelPipeline:
         ## Create quotes table if none exists
         self.cur.execute("""
         CREATE TABLE IF NOT EXISTS compel_data(
+            category TEXT,
             name TEXT,
             brand TEXT,
             price REAL,
@@ -45,6 +46,7 @@ class SqliteCompelPipeline:
         if result:
             self.cur.execute("""
                             UPDATE compel_data SET 
+                                category = ?,
                                 name = ?,
                                 brand = ?,
                                 price = ?,
@@ -53,6 +55,7 @@ class SqliteCompelPipeline:
                             WHERE url = ? AND date = ?
                         """,
                              (
+                                 item['category'],
                                  item['name'],
                                  item['brand'],
                                  item['price'],
@@ -68,10 +71,11 @@ class SqliteCompelPipeline:
         else:
             ## Define insert statement
             self.cur.execute("""
-                INSERT INTO compel_data (name, brand, price, quantity, days_until_shipment, url, date) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO compel_data (category, name, brand, price, quantity, days_until_shipment, url, date) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
                              (
+                                 item['category'],
                                  item['name'],
                                  item['brand'],
                                  item['price'],

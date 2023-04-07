@@ -22,6 +22,7 @@ class CompelZeroDaysSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(next_page_url), callback=self.parse)
 
     def parse_product(self, response):
+        category = response.css('h1::text').get()
         item_offers = response.xpath('//table[@id="item_offers"]')
         item_id_search = item_offers.xpath('@data-item_id_search').get()
         query_string = item_offers.xpath('@data-query_string').get()
@@ -76,7 +77,8 @@ class CompelZeroDaysSpider(scrapy.Spider):
             headers=headers,
             cookies=cookies,
             callback=self.parse_price_table,
-            meta={'query_string': query_string, 'search_brend': search_brend, 'prod_url': response.url}
+            meta={'query_string': query_string, 'search_brend': search_brend, 'prod_url': response.url,
+                  'category': category}
         )
 
     def parse_price_table(self, response):
@@ -127,6 +129,7 @@ class CompelZeroDaysSpider(scrapy.Spider):
 
         product_item = ProductItem()
 
+        product_item['category'] = response.meta['category']
         product_item['name'] = response.meta['query_string']
         product_item['brand'] = map_brand_name(response.meta['search_brend'])
         product_item['price'] = lowest_price
