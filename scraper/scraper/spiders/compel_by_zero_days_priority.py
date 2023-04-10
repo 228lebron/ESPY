@@ -5,10 +5,10 @@ from scraper.items import ProductItem
 
 
 class CompelZeroDaysSpider(scrapy.Spider):
-    name = 'compel_zero_days_priority'
+    name = 'compel_mcu'
     custom_settings = {'ITEM_PIPELINES': {'scraper.pipelines.SqliteCompelPipeline': 300}}
     allowed_domains = ['www.electronshik.ru']
-    start_urls = ['https://www.electronshik.ru/catalog/mikrokontrollery/KjMU']
+    start_urls = ['https://www.electronshik.ru/catalog/mikrokontrollery/L1J4']
 
     def parse(self, response):
         product_urls = response.css('a.part-name::attr(href)').getall()
@@ -120,17 +120,26 @@ class CompelZeroDaysSpider(scrapy.Spider):
                     price = float(price + '.' + fraction)
                     qty_td = offer.css('td.offer-header-avail::attr(data-qty)').get()
 
-                    # Проверка, что цена меньше текущей минимальной цены
-                    if lowest_price is None or price < lowest_price:
-                        lowest_price = price
-                        lowest_price_qty = int(qty_td)
-                        lowest_days_until_shipment = days_until_shipment
-                    # Если цена равна текущей минимальной цене, то проверяем время до отгрузки
-                    elif price == lowest_price:
+                    # Проверка, что время до отгрузки равно нулю
+                    if days_until_shipment == 0:
+                        # Проверка, что цена меньше текущей минимальной цены
+                        if lowest_price is None or price < lowest_price:
+                            lowest_price = price
+                            lowest_price_qty = int(qty_td)
+                            lowest_days_until_shipment = days_until_shipment
+                    # Если время до отгрузки не равно нулю
+                    else:
                         # Проверяем, что временя до отгрузки меньше текущего минимального времени до отгрузки
                         if lowest_days_until_shipment is None or days_until_shipment < lowest_days_until_shipment:
                             lowest_days_until_shipment = days_until_shipment
+                            lowest_price = price
                             lowest_price_qty = int(qty_td)
+                        # Если время до отгрузки равно текущему минимальному времени до отгрузки, то проверяем цену
+                        elif days_until_shipment == lowest_days_until_shipment:
+                            # Проверяем, что цена меньше текущей минимальной цены
+                            if lowest_price is None or price < lowest_price:
+                                lowest_price = price
+                                lowest_price_qty = int(qty_td)
 
         product_item = ProductItem()
 
