@@ -20,5 +20,6 @@ class ProductItem(scrapy.Item):
     price = scrapy.Field()
     quantity = scrapy.Field()
     days_until_shipment = scrapy.Field()
+    special_mark_hit = scrapy.Field()
     url = scrapy.Field()
     date = scrapy.Field()
