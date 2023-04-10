@@ -100,33 +100,6 @@ class CompelZeroDaysSpider(scrapy.Spider):
 
         dms_offers = response.css('tr.dms_offer')
 
-        # Initialize variables to keep track of the lowest price and the number of days until shipment
-        #lowest_price = None
-        #lowest_price_qty = None
-        ##days = None
-
-        #for offer in dms_offers:
-        #    days_until_shipment_element = offer.css('td.offer-header-dt::text').get()
-        #    days_until_shipment = re.sub(r'\D', '', days_until_shipment_element)
-        #    price_elements = offer.css('span.integer')
-
-        #    for price_element in price_elements:
-        #        if price_element is not None:
-        #            price = re.sub(r'\D', '', price_element.get())
-        #            fraction = collect_fraction(price_element)
-        #            price = float(price + '.' + fraction)
-        #            qty_td = offer.css('td.offer-header-avail::attr(data-qty)').get()
-
-        #            if (days == 0 or days is None) and days_until_shipment == 0:
-        #                if lowest_price is None or price < lowest_price:
-        #                    lowest_price = price
-        #                    lowest_price_qty = int(qty_td)
-        #                    days = days_until_shipment
-        #            elif days is None or days_until_shipment < days:
-        #                lowest_price = price
-        #                lowest_price_qty = int(qty_td)
-        #                days = days_until_shipment
-
         # Инициализация переменных для минимальной цены, количества товара и времени до отгрузки
         lowest_price = None
         lowest_price_qty = None
