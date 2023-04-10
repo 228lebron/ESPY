@@ -101,9 +101,9 @@ class CompelZeroDaysSpider(scrapy.Spider):
         dms_offers = response.css('tr.dms_offer')
 
         # Initialize variables to keep track of the lowest price and the number of days until shipment
-        lowest_price = None
-        lowest_price_qty = None
-        #days = None
+        #lowest_price = None
+        #lowest_price_qty = None
+        ##days = None
 
         #for offer in dms_offers:
         #    days_until_shipment_element = offer.css('td.offer-header-dt::text').get()
@@ -127,26 +127,36 @@ class CompelZeroDaysSpider(scrapy.Spider):
         #                lowest_price_qty = int(qty_td)
         #                days = days_until_shipment
 
+        # Инициализация переменных для минимальной цены, количества товара и времени до отгрузки
+        lowest_price = None
+        lowest_price_qty = None
+        lowest_days_until_shipment = None
+
         # Обход элементов с информацией о продуктах
         for offer in dms_offers:
             # Извлечение информации о времени до отгрузки
             days_until_shipment_element = offer.css('td.offer-header-dt::text').get()
             days_until_shipment = int(re.sub(r'\D', '', days_until_shipment_element))
 
-            # Проверка, что время до отгрузки равно нулю
-            if days_until_shipment == 0:
-                # Извлечение информации о цене
-                price_elements = offer.css('span.integer')
-                for price_element in price_elements:
-                    if price_element is not None:
-                        price = re.sub(r'\D', '', price_element.get())
-                        fraction = collect_fraction(price_element)
-                        price = float(price + '.' + fraction)
-                        qty_td = offer.css('td.offer-header-avail::attr(data-qty)').get()
+            # Извлечение информации о цене
+            price_elements = offer.css('span.integer')
+            for price_element in price_elements:
+                if price_element is not None:
+                    price = re.sub(r'\D', '', price_element.get())
+                    fraction = collect_fraction(price_element)
+                    price = float(price + '.' + fraction)
+                    qty_td = offer.css('td.offer-header-avail::attr(data-qty)').get()
 
-                        # Проверка, что цена меньше текущей минимальной цены
-                        if lowest_price is None or price < lowest_price:
-                            lowest_price = price
+                    # Проверка, что цена меньше текущей минимальной цены
+                    if lowest_price is None or price < lowest_price:
+                        lowest_price = price
+                        lowest_price_qty = int(qty_td)
+                        lowest_days_until_shipment = days_until_shipment
+                    # Если цена равна текущей минимальной цене, то проверяем время до отгрузки
+                    elif price == lowest_price:
+                        # Проверяем, что временя до отгрузки меньше текущего минимального времени до отгрузки
+                        if lowest_days_until_shipment is None or days_until_shipment < lowest_days_until_shipment:
+                            lowest_days_until_shipment = days_until_shipment
                             lowest_price_qty = int(qty_td)
 
         product_item = ProductItem()
@@ -156,7 +166,7 @@ class CompelZeroDaysSpider(scrapy.Spider):
         product_item['brand'] = map_brand_name(response.meta['search_brend'])
         product_item['price'] = lowest_price
         product_item['quantity'] = lowest_price_qty
-        product_item['days_until_shipment'] = 0
+        product_item['days_until_shipment'] = lowest_days_until_shipment
         product_item['special_mark_hit'] = response.meta['special_mark_hit']
         product_item['url'] = response.meta['prod_url']
         product_item['date'] = datetime.date.today()
