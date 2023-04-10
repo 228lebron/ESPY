@@ -156,7 +156,7 @@ class CompelZeroDaysSpider(scrapy.Spider):
         product_item['brand'] = map_brand_name(response.meta['search_brend'])
         product_item['price'] = lowest_price
         product_item['quantity'] = lowest_price_qty
-        product_item['days_until_shipment'] = days
+        product_item['days_until_shipment'] = 0
         product_item['special_mark_hit'] = response.meta['special_mark_hit']
         product_item['url'] = response.meta['prod_url']
         product_item['date'] = datetime.date.today()
