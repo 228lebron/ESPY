@@ -32,6 +32,7 @@ class SqliteCompelPipeline:
             price REAL,
             quantity INT,
             days_until_shipment INT,
+            special_mark_hit TEXT,
             url TEXT,
             date DATE
         )
@@ -51,7 +52,8 @@ class SqliteCompelPipeline:
                                 brand = ?,
                                 price = ?,
                                 quantity = ?,
-                                days_until_shipment = ?
+                                days_until_shipment = ?,
+                                special_mark_hit = ?
                             WHERE url = ? AND date = ?
                         """,
                              (
@@ -61,6 +63,7 @@ class SqliteCompelPipeline:
                                  item['price'],
                                  item['quantity'],
                                  item['days_until_shipment'],
+                                 item['special_mark_hit'],
                                  item['url'],
                                  item['date']
                              ))
@@ -71,8 +74,9 @@ class SqliteCompelPipeline:
         else:
             ## Define insert statement
             self.cur.execute("""
-                INSERT INTO compel_data (category, name, brand, price, quantity, days_until_shipment, url, date) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO compel_data (category, name, brand, price, quantity, days_until_shipment, special_mark_hit,
+                 url, date) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                              (
                                  item['category'],
@@ -81,6 +85,7 @@ class SqliteCompelPipeline:
                                  item['price'],
                                  item['quantity'],
                                  item['days_until_shipment'],
+                                 item['special_mark_hit'],
                                  item['url'],
                                  item['date'],
                              ))
