@@ -23,3 +23,13 @@ class ProductItem(scrapy.Item):
     special_mark_hit = scrapy.Field()
     url = scrapy.Field()
     date = scrapy.Field()
+
+class PromItem(scrapy.Item):
+    category = scrapy.Field()
+    name = scrapy.Field()
+    brand = scrapy.Field()
+    price = scrapy.Field()
+    quantity = scrapy.Field()
+    is_new = scrapy.Field()
+    is_sale = scrapy.Field()
+    date = scrapy.Field()
