@@ -35,29 +35,40 @@ class PromIcSpider(scrapy.Spider):
         table_list_items = response.css('.table-list__item')
         category = response.xpath('//h1/text()').get()
 
-        for item in table_list_items:
-            title = item.css('a.product-preview__title::attr(title)').get()
-            brand = item.css('span.product-preview__code i a::text').get()
-            quantity = item.css('span.table-list__counter::text').extract_first().replace(' ', '')
-            price_str = item.css('span.table-list__price::text').get()
-            price = price_str.replace('от ', '').replace(',', '.').strip()
-            is_new = item.css('span.pr-badge.badge-new::text').get()
-            is_sale = item.css('span.pr-badge.badge-sale::text').get()
+        #for item in table_list_items:
+        #    title = item.css('a.product-preview__title::attr(title)').get()
+        #    brand = item.css('span.product-preview__code i a::text').get()
+        #    quantity = item.css('span.table-list__counter::text').extract_first().replace(' ', '')
+        #    price_str = item.css('span.table-list__price::text').get()
+        #    price = price_str.replace('от ', '').replace(',', '.').strip()
+        #    is_new = item.css('span.pr-badge.badge-new::text').get()
+        #    is_sale = item.css('span.pr-badge.badge-sale::text').get()
+#
+        #    product_item = PromItem()
+#
+        #    product_item['category'] = category
+        #    product_item['name'] = title
+        #    product_item['brand'] = brand
+        #    product_item['price'] = price
+        #    product_item['quantity'] = quantity
+        #    product_item['is_new'] = is_new
+        #    product_item['is_sale'] = is_sale
+        #    product_item['date'] = datetime.date.today()
+#
+        #    yield product_item
 
-            product_item = PromItem()
+        product_items = [PromItem(
+            category=category,
+            name=item.css('a.product-preview__title::attr(title)').get(),
+            brand=item.css('span.product-preview__code i a::text').get(),
+            price=item.css('span.table-list__price::text').get().replace('от ', '').replace(',', '.').strip(),
+            quantity=item.css('span.table-list__counter::text').extract_first().replace(' ', ''),
+            is_new=item.css('span.pr-badge.badge-new::text').get(),
+            is_sale=item.css('span.pr-badge.badge-sale::text').get(),
+            date=datetime.date.today()
+        ) for item in table_list_items]
 
-            product_item['category'] = category
-            product_item['name'] = title
-            product_item['brand'] = brand
-            product_item['price'] = price
-            product_item['quantity'] = quantity
-            product_item['is_new'] = is_new
-            product_item['is_sale'] = is_sale
-            product_item['date'] = datetime.date.today()
-
-            yield product_item
-
-
+        yield product_items
 
 
         next_page = response.css('.paging-next__link::attr(href)').get()
