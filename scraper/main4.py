@@ -12,6 +12,15 @@ def count_positive_sales(row, unique_dates):
     return count
 
 
+def count_negative_sales(row, unique_dates):
+    count = 0
+    for idx, date in enumerate(unique_dates):
+        if idx > 0:
+            if row[f'diff_qty{unique_dates[idx - 1]}_{date}'] < 0:
+                count += 1
+    return count
+
+
 # Устанавливаем соединение с базой данных
 conn = sqlite3.connect('products.db')
 
@@ -21,6 +30,7 @@ df = pd.read_sql_query('SELECT category, name, brand, days_until_shipment, quant
 
 # Выбираем уникальные даты в данных
 unique_dates = df['date'].unique()
+last_date = unique_dates[-1]
 
 # Создаем пустой DataFrame для результатов
 result = None
@@ -58,8 +68,8 @@ analytics_result = analytics_result.rename(columns={'category': 'Категор�
                                                     'days_until_shipment': 'Дней до отгрузки'})
 
 # Добавляем новый столбец с количеством положительных продаж
-analytics_result['Кол-во продаж'] = result.apply(lambda row: count_positive_sales(row, unique_dates), axis=1)
-
+analytics_result['Резервы'] = result.apply(lambda row: count_positive_sales(row, unique_dates), axis=1)
+analytics_result['Возвраты'] = result.apply(lambda row: count_negative_sales(row, unique_dates), axis=1)
 
 # Добавляем переменные для общего количества проданных штук и суммарной цены для каждого товара
 total_qty_sales = result.filter(regex='diff_qty\d+').sum(axis=1)
@@ -68,8 +78,9 @@ mean_price = result.filter(regex='price\d+').mean(axis=1)
 analytics_result['Продано шт.'] = total_qty_sales
 analytics_result['Средняя цена'] = mean_price
 analytics_result['Продано в руб.'] = total_qty_sales * mean_price
+analytics_result['Кол-во на остатке'] = result[f'qty{last_date}']
 
 
-with pd.ExcelWriter('Result1.xlsx') as writer:
+with pd.ExcelWriter('IC_21-04-2023.xlsx') as writer:
     analytics_result.to_excel(writer, index=False, sheet_name='Анализ')
     result.to_excel(writer, index=False, sheet_name='Данные')
